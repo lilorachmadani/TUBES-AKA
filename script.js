@@ -111,3 +111,4 @@ function drawChart() {
     ctx.fillStyle = "#475569";
     ctx.fillText("Skala Logaritmik (log10)", 10, 20);
 }
+
