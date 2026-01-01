@@ -1,11 +1,5 @@
 let data = {};
 
-function fibIteratif(n) {
-    let a = 0, b = 1;
-    for (let i = 2; i <= n; i++) [a, b] = [b, a + b];
-    return n === 0 ? 0 : b;
-}
-
 function fibRekursif(n) {
     if (n <= 1) return n;
     return fibRekursif(n - 1) + fibRekursif(n - 2);
