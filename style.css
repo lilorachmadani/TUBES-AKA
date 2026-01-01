@@ -28,5 +28,17 @@ input {
 }
 
 button {
-    flex: 1;
+    background: #4f6ef7;
+    color: white;
+}
+
+button.danger {
+    background: #ef4444;
+}
+
+.result {
+    background: #eef2ff;
+    border-left: 4px solid #4f6ef7;
+    padding: 12px;
+    border-radius: 8px;
 }
