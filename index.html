@@ -14,6 +14,7 @@
     </header>
 
     <section class="panel">
+        <!-- PANEL KIRI -->
         <div class="control">
             <label>Ukuran Input (n)</label>
             <input type="number" id="n" value="10">
@@ -32,8 +33,31 @@
 
             <h4>History Percobaan</h4>
             <div id="history" class="history">Belum ada percobaan</div>
+
+            <!-- PENJELASAN (DIKEMBALIKAN PERSIS) -->
+            <h4>Penjelasan Algoritma</h4>
+
+            <details>
+                <summary>Algoritma Iteratif</summary>
+                <p>Menggunakan perulangan (loop). Kompleksitas waktu O(n).</p>
+            </details>
+
+            <details>
+                <summary>Algoritma Rekursif</summary>
+                <p>Memanggil dirinya sendiri. Kompleksitas waktu O(2ⁿ).</p>
+            </details>
+
+            <details>
+                <summary>Rumus Fibonacci</summary>
+<pre>
+F(0) = 0
+F(1) = 1
+F(n) = F(n-1) + F(n-2)
+</pre>
+            </details>
         </div>
 
+        <!-- PANEL KANAN -->
         <div class="visual">
             <h3>Grafik Running Time</h3>
 
@@ -42,11 +66,11 @@
                 <span class="rekursif">Rekursif</span>
             </div>
 
-            <p class="chart-title">Tren Waktu Eksekusi (Line Chart)</p>
-            <canvas id="lineChart"></canvas>
+            <p class="chart-title">Line Chart</p>
+            <canvas id="lineChart" width="520" height="260"></canvas>
 
-            <p class="chart-title">Perbandingan Langsung (Bar Chart)</p>
-            <canvas id="barChart"></canvas>
+            <p class="chart-title">Bar Chart</p>
+            <canvas id="barChart" width="520" height="260"></canvas>
         </div>
     </section>
 
