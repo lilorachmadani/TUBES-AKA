@@ -1,60 +1,120 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Analisis Kompleksitas Algoritma</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
 
-<div class="app">
-    <header>
-        <h1>Analisis Kompleksitas Algoritma</h1>
-        <p>Perbandingan Fibonacci Iteratif dan Rekursif</p>
-    </header>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e5e7eb, #64748b, #020617);
+    color: #e5e7eb;
+}
 
-    <section class="panel">
-        <div class="control">
-            <label>Ukuran Input (n)</label>
-            <input type="number" id="n" value="10">
+.app {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px;
+}
 
-            <div class="buttons">
-                <button onclick="ujiIteratif()">Uji Iteratif</button>
-                <button class="danger" onclick="ujiRekursif()">Uji Rekursif</button>
-            </div>
+.panel {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+}
 
-            <div class="result" id="hasil">
-                Hasil akan ditampilkan di sini
-            </div>
-        </div>
+.control, .visual, .table-section {
+    background: #020617;
+    padding: 22px;
+    border-radius: 16px;
+}
 
-        <div class="visual">
-    <h3>Grafik Waktu Eksekusi</h3>
+.control {
+    border-left: 6px solid #60a5fa;
+}
 
-    <div class="legend">
-        <span class="iteratif">Iteratif</span>
-        <span class="rekursif">Rekursif</span>
-    </div>
+label {
+    margin-top: 10px;
+    display: block;
+}
 
-    <canvas id="chart"></canvas>
-</div>
+input {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+}
 
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
 
-    <section class="table-section">
-        <h3>Tabel Perbandingan</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>n</th>
-                    <th>Iteratif (ms)</th>
-                    <th>Rekursif (ms)</th>
-                </tr>
-            </thead>
-            <tbody id="tabelData"></tbody>
-        </table>
-    </section>
-</div>
+button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: #2563eb;
+    color: white;
+}
 
-<script src="script.js"></script>
-</body>
-</html>
+button.danger { background: #dc2626; }
+
+button.clear {
+    margin-top: 10px;
+    width: 100%;
+    background: #334155;
+}
+
+.result, .history {
+    margin-top: 12px;
+    background: #020617;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.history {
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.legend span::before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    margin-right: 6px;
+}
+
+.legend .iteratif::before { background: #60a5fa; }
+.legend .rekursif::before { background: #f87171; }
+
+canvas {
+    width: 100%;
+    height: 240px;
+    margin-bottom: 12px;
+    background: #020617;
+    border-radius: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    border-bottom: 1px solid #1e293b;
+    text-align: center;
+}
