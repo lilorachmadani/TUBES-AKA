@@ -28,7 +28,11 @@ function ujiRekursif() {
 
 function runTest(type) {
     const n = Number(document.getElementById("n").value);
-    let ulang = Number(document.getElementById("ulang").value);
+    let ulang = document.getElementById("ulang").valueAsNumber;
+    if (!Number.isInteger(ulang) || ulang < 1) {
+    alert("Jumlah percobaan tidak valid");
+    return;
+}
 
     if (type === "iteratif" && ulang < 50000) {
         ulang = 50000;
