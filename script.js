@@ -204,3 +204,6 @@ function drawBarChart(p = 1) {
         ctx.fillText(n, x+4, baseY + 18);
     });
 }
+
+
+
