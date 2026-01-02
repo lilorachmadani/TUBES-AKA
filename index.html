@@ -18,27 +18,37 @@
             <label>Ukuran Input (n)</label>
             <input type="number" id="n" value="10">
 
+            <label>Jumlah Percobaan</label>
+            <input type="number" id="ulang" value="1000">
+
             <div class="buttons">
                 <button onclick="ujiIteratif()">Uji Iteratif</button>
                 <button class="danger" onclick="ujiRekursif()">Uji Rekursif</button>
             </div>
 
-            <div class="result" id="hasil">
-                Hasil akan ditampilkan di sini
-            </div>
+            <button class="clear" onclick="clearAll()">Clear Data</button>
+
+            <div class="result" id="hasil">Hasil akan muncul di sini</div>
+
+            <h4>History Percobaan</h4>
+            <div id="history" class="history">Belum ada percobaan</div>
         </div>
 
         <div class="visual">
-    <h3>Grafik Waktu Eksekusi</h3>
+            <h3>Grafik Running Time</h3>
 
-    <div class="legend">
-        <span class="iteratif">Iteratif</span>
-        <span class="rekursif">Rekursif</span>
-    </div>
+            <div class="legend">
+                <span class="iteratif">Iteratif</span>
+                <span class="rekursif">Rekursif</span>
+            </div>
 
-    <canvas id="chart"></canvas>
-</div>
+            <p class="chart-title">Tren Waktu Eksekusi (Line Chart)</p>
+            <canvas id="lineChart"></canvas>
 
+            <p class="chart-title">Perbandingan Langsung (Bar Chart)</p>
+            <canvas id="barChart"></canvas>
+        </div>
+    </section>
 
     <section class="table-section">
         <h3>Tabel Perbandingan</h3>
