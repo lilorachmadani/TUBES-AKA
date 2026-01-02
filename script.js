@@ -1,11 +1,14 @@
 let data = {};
 let historyLog = [];
-let animFrame = null;
 
-/* ===== ALGORITMA ===== */
+
 function fibIteratif(n) {
     let a = 0, b = 1;
-    for (let i = 2; i <= n; i++) [a, b] = [b, a + b];
+    for (let i = 2; i <= n; i++) {
+        let c = a + b;
+        a = b;
+        b = c;
+    }
     return n === 0 ? 0 : b;
 }
 
@@ -14,196 +17,259 @@ function fibRekursif(n) {
     return fibRekursif(n - 1) + fibRekursif(n - 2);
 }
 
-/* ===== KONTROL ===== */
-function ujiIteratif() { uji("iteratif"); }
-function ujiRekursif() { uji("rekursif"); }
 
-function uji(tipe) {
-    let n = +document.getElementById("n").value;
-    let ulang = +document.getElementById("ulang").value;
+function ujiIteratif() {
+    runTest("iteratif");
+}
 
-    if (!data[n]) data[n] = { iteratif: "-", rekursif: "-" };
+function ujiRekursif() {
+    runTest("rekursif");
+}
+
+function runTest(type) {
+    const n = Number(document.getElementById("n").value);
+    let ulang = document.getElementById("ulang").valueAsNumber;
+    if (!Number.isInteger(ulang) || ulang < 1) {
+    alert("Jumlah percobaan tidak valid");
+    return;
+}
+
+    if (type === "iteratif" && ulang < 50000) {
+        ulang = 50000;
+    }
 
     let start = performance.now();
     let hasil;
+
     for (let i = 0; i < ulang; i++) {
-        hasil = tipe === "iteratif" ? fibIteratif(n) : fibRekursif(n);
+        hasil = (type === "iteratif")
+            ? fibIteratif(n)
+            : fibRekursif(n);
     }
 
     let waktu = +(performance.now() - start).toFixed(3);
-    data[n][tipe] = waktu;
 
-    historyLog.unshift(`${tipe} | n=${n} | ${ulang}x | ${waktu} ms`);
+    if (!data[n]) {
+        data[n] = { iteratif: "-", rekursif: "-" };
+    }
+    data[n][type] = waktu;
+
+    historyLog.unshift(
+        `${type} | n=${n} | ${ulang}x | ${waktu} ms`
+    );
 
     document.getElementById("hasil").innerText =
-        `${tipe.toUpperCase()} → Fibonacci(${n}) = ${hasil}
+`${type.toUpperCase()} → Fibonacci(${n}) = ${hasil}
 (${ulang}x), Waktu: ${waktu} ms`;
 
     updateHistory();
-    updateTabel();
-    animateCharts();
+    updateTable();
+    drawLineChart();
+    drawBarChart();
 }
 
-/* ===== CLEAR ===== */
 function clearAll() {
-    if (animFrame) cancelAnimationFrame(animFrame);
     data = {};
     historyLog = [];
-    document.getElementById("hasil").innerText = "Data telah dihapus";
+
+    document.getElementById("hasil").innerText = "Data dihapus";
     document.getElementById("history").innerText = "Belum ada percobaan";
     document.getElementById("tabelData").innerHTML = "";
-    resetCanvas("lineChart");
-    resetCanvas("barChart");
+
+    clearCanvas("lineChart");
+    clearCanvas("barChart");
 }
 
-function resetCanvas(id) {
-    const c = document.getElementById(id);
-    c.width = c.offsetWidth;
-    c.height = c.offsetHeight;
-}
-
-/* ===== HISTORY & TABEL ===== */
 function updateHistory() {
     const el = document.getElementById("history");
     el.innerHTML = "";
-    historyLog.slice(0, 15).forEach(h => {
-        const d = document.createElement("div");
-        d.innerText = h;
-        el.appendChild(d);
+    historyLog.slice(0, 12).forEach(item => {
+        const div = document.createElement("div");
+        div.innerText = item;
+        el.appendChild(div);
     });
 }
 
-function updateTabel() {
+function updateTable() {
     const tbody = document.getElementById("tabelData");
     tbody.innerHTML = "";
-    Object.keys(data).sort((a,b)=>a-b).forEach(n => {
-        tbody.innerHTML += `
-        <tr>
-            <td>${n}</td>
-            <td>${data[n].iteratif}</td>
-            <td>${data[n].rekursif}</td>
-        </tr>`;
-    });
+
+    Object.keys(data)
+        .sort((a, b) => a - b)
+        .forEach(n => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${n}</td>
+                    <td>${data[n].iteratif}</td>
+                    <td>${data[n].rekursif}</td>
+                </tr>
+            `;
+        });
 }
 
-/* ===== ANIMASI ===== */
-function animateCharts() {
-    if (animFrame) cancelAnimationFrame(animFrame);
-    let step = 0, max = 25;
 
-    function frame() {
-        step++;
-        let p = step / max;
-        drawLineChart(p);
-        drawBarChart(p);
-        if (step < max) animFrame = requestAnimationFrame(frame);
-    }
-    frame();
+function clearCanvas(id) {
+    const c = document.getElementById(id);
+    const ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
 }
 
-/* ===== LINE CHART (Sumbu JELAS) ===== */
-function drawLineChart(p = 1) {
+
+function drawLineChart() {
     const c = document.getElementById("lineChart");
     const ctx = c.getContext("2d");
-    c.width = c.offsetWidth;
-    c.height = 240;
-    ctx.clearRect(0,0,c.width,c.height);
+    ctx.clearRect(0, 0, c.width, c.height);
 
-    const ns = Object.keys(data)
-        .sort((a,b)=>a-b)
-        .filter(n => data[n].iteratif !== "-" && data[n].rekursif !== "-");
-    if (ns.length < 2) return;
+    const keys = Object.keys(data).map(Number).sort((a, b) => a - b);
+    if (keys.length < 2) return;
 
-    const pad = 50;
+    const pad = 45;
     const baseY = c.height - pad;
     const maxH = baseY - pad;
 
-    let maxVal = Math.max(...ns.map(n =>
-        Math.max(data[n].iteratif, data[n].rekursif)
-    ));
-    const scale = maxH / maxVal;
-    const visible = Math.max(1, Math.floor(ns.length * p));
+    const maxVal = Math.max(
+        ...keys.map(n =>
+            Math.max(
+                data[n].iteratif === "-" ? 0 : data[n].iteratif,
+                data[n].rekursif === "-" ? 0 : data[n].rekursif
+            )
+        )
+    );
 
-    /* Sumbu Y */
+    const scale = maxH / maxVal;
+
+
+    ctx.strokeStyle = "#1e293b";
     ctx.fillStyle = "#cbd5f5";
     for (let i = 0; i <= 4; i++) {
-        let val = (maxVal * i / 4).toFixed(1);
         let y = baseY - (i / 4) * maxH;
-        ctx.fillText(val, 6, y + 4);
-        ctx.strokeStyle = "#1e293b";
         ctx.beginPath();
         ctx.moveTo(pad, y);
         ctx.lineTo(c.width - pad, y);
         ctx.stroke();
+        ctx.fillText((maxVal * i / 4).toFixed(1), 6, y + 4);
     }
 
-    /* Sumbu X */
-    ns.forEach((n,i)=>{
-        let x = pad + i*(c.width-2*pad)/(ns.length-1);
-        ctx.fillText(n, x-4, baseY + 16);
+   
+    keys.forEach((n, i) => {
+        let x = pad + i * (c.width - 2 * pad) / (keys.length - 1);
+        ctx.fillText(n, x - 4, baseY + 16);
     });
 
-    ["iteratif","rekursif"].forEach(key=>{
+    ["iteratif", "rekursif"].forEach(type => {
+        const color = type === "iteratif" ? "#60a5fa" : "#f87171";
+        const offset = type === "iteratif" ? -4 : 4;
+
+   
         ctx.beginPath();
-        ns.slice(0, visible).forEach((n,i)=>{
-            let x = pad + i*(c.width-2*pad)/(ns.length-1);
-            let y = baseY - data[n][key]*scale;
-            i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-        });
-        ctx.strokeStyle = key==="iteratif" ? "#60a5fa" : "#f87171";
+        ctx.strokeStyle = color;
         ctx.lineWidth = 2.5;
+
+        keys.forEach((n, i) => {
+            if (data[n][type] === "-") return;
+            let x = pad + i * (c.width - 2 * pad) / (keys.length - 1);
+            let y = baseY - data[n][type] * scale + offset;
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
         ctx.stroke();
+
+   
+        keys.forEach((n, i) => {
+            if (data[n][type] === "-") return;
+            let x = pad + i * (c.width - 2 * pad) / (keys.length - 1);
+            let y = baseY - data[n][type] * scale + offset;
+
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+        });
     });
 }
 
-/* ===== BAR CHART (PEMBATAS JELAS) ===== */
-function drawBarChart(p = 1) {
+function drawBarChart() {
     const c = document.getElementById("barChart");
     const ctx = c.getContext("2d");
-    c.width = c.offsetWidth;
-    c.height = 240;
-    ctx.clearRect(0,0,c.width,c.height);
+    ctx.clearRect(0, 0, c.width, c.height);
 
-    const pad = 50;
+    const keys = Object.keys(data).map(Number).sort((a, b) => a - b);
+    if (!keys.length) return;
+
+    const pad = 45;
     const baseY = c.height - pad;
-    const maxH = baseY - pad;
-
-    const ns = Object.keys(data).sort((a,b)=>a-b);
-    if (!ns.length) return;
-
-    let maxVal = Math.max(...ns.map(n =>
-        data[n].rekursif === "-" ? 1 : Math.log10(data[n].rekursif+1)
-    ));
-    const scale = maxH / maxVal;
     const barW = 18;
-    const visible = Math.max(1, Math.floor(ns.length * p));
 
-    /* Garis pembatas */
     ctx.strokeStyle = "#334155";
     ctx.beginPath();
     ctx.moveTo(pad, baseY);
     ctx.lineTo(c.width - pad, baseY);
     ctx.stroke();
 
-    ns.slice(0, visible).forEach((n,i)=>{
-        let x = pad + i*70;
+    keys.forEach((n, i) => {
+        let x = pad + i * 60;
 
         if (data[n].iteratif !== "-") {
-            let h = Math.log10(data[n].iteratif+1)*scale;
+            let h = Math.log10(data[n].iteratif + 1) * 35;
             ctx.fillStyle = "#60a5fa";
-            ctx.fillRect(x, baseY-h, barW, h);
+            ctx.fillRect(x, baseY - h, barW, h);
         }
 
         if (data[n].rekursif !== "-") {
-            let h = Math.log10(data[n].rekursif+1)*scale;
+            let h = Math.log10(data[n].rekursif + 1) * 35;
             ctx.fillStyle = "#f87171";
-            ctx.fillRect(x+barW+6, baseY-h, barW, h);
+            ctx.fillRect(x + barW + 6, baseY - h, barW, h);
         }
 
         ctx.fillStyle = "#cbd5f5";
-        ctx.fillText(n, x+4, baseY + 18);
+        ctx.fillText(n, x + 2, baseY + 16);
     });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const details = document.querySelectorAll("details");
 
+    if (details.length >= 2) {
+        details[0].innerHTML = `
+            <summary>Algoritma Iteratif</summary>
+            <p>
+                Algoritma iteratif merupakan pendekatan penyelesaian masalah
+                dengan menggunakan perulangan (loop) tanpa pemanggilan fungsi
+                secara berulang.
+            </p>
+            <p>
+                Pada algoritma Fibonacci iteratif, perhitungan dilakukan secara
+                bertahap mulai dari nilai awal F(0) dan F(1), kemudian dilanjutkan
+                hingga mencapai F(n). Setiap iterasi hanya melakukan satu operasi
+                penjumlahan, sehingga tidak terjadi perhitungan ulang nilai yang sama.
+            </p>
+            <p>
+                Pendekatan ini sangat efisien karena tidak memiliki overhead
+                pemanggilan fungsi dan hanya membutuhkan sedikit variabel bantu.
+                Oleh karena itu, algoritma iteratif memiliki performa yang stabil
+                meskipun ukuran input semakin besar.
+            </p>
+            <p><b>Kompleksitas waktu:</b> O(n)</p>
+            <p><b>Kompleksitas ruang:</b> O(1)</p>
+        `;
 
+        details[1].innerHTML = `
+            <summary>Algoritma Rekursif</summary>
+            <p>
+                Algoritma rekursif menyelesaikan masalah dengan cara memanggil
+                dirinya sendiri hingga mencapai kondisi dasar (base case).
+            </p>
+            <p>
+                Pada Fibonacci rekursif, setiap pemanggilan fungsi F(n) akan
+                memanggil F(n−1) dan F(n−2). Hal ini menyebabkan banyak nilai
+                Fibonacci dihitung berulang kali.
+            </p>
+            <p>
+                Jumlah pemanggilan fungsi bertambah secara eksponensial seiring
+                bertambahnya nilai n, sehingga waktu eksekusi meningkat sangat
+                drastis dibandingkan pendekatan iteratif.
+            </p>
+            <p><b>Kompleksitas waktu:</b> O(2ⁿ)</p>
+            <p><b>Kompleksitas ruang:</b> O(n)</p>
+        `;
+    }
+});
