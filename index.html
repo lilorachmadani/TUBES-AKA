@@ -1,120 +1,70 @@
-* {
-    box-sizing: border-box;
-    font-family: "Segoe UI", sans-serif;
-}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Analisis Kompleksitas Algoritma</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-body {
-    margin: 0;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #e5e7eb, #64748b, #020617);
-    color: #e5e7eb;
-}
+<div class="app">
+    <header>
+        <h1>Analisis Kompleksitas Algoritma</h1>
+        <p>Perbandingan Fibonacci Iteratif dan Rekursif</p>
+    </header>
 
-.app {
-    max-width: 1200px;
-    margin: auto;
-    padding: 30px;
-}
+    <section class="panel">
+        <div class="control">
+            <label>Ukuran Input (n)</label>
+            <input type="number" id="n" value="10">
 
-.panel {
-    display: grid;
-    grid-template-columns: 380px 1fr;
-    gap: 20px;
-}
+            <label>Jumlah Percobaan</label>
+            <input type="number" id="ulang" value="1000">
 
-.control, .visual, .table-section {
-    background: #020617;
-    padding: 22px;
-    border-radius: 16px;
-}
+            <div class="buttons">
+                <button onclick="ujiIteratif()">Uji Iteratif</button>
+                <button class="danger" onclick="ujiRekursif()">Uji Rekursif</button>
+            </div>
 
-.control {
-    border-left: 6px solid #60a5fa;
-}
+            <button class="clear" onclick="clearAll()">Clear Data</button>
 
-label {
-    margin-top: 10px;
-    display: block;
-}
+            <div class="result" id="hasil">Hasil akan muncul di sini</div>
 
-input {
-    width: 100%;
-    margin-top: 6px;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-}
+            <h4>History Percobaan</h4>
+            <div id="history" class="history">Belum ada percobaan</div>
+        </div>
 
-.buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
+        <div class="visual">
+            <h3>Grafik Running Time</h3>
 
-button {
-    flex: 1;
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    background: #2563eb;
-    color: white;
-}
+            <div class="legend">
+                <span class="iteratif">Iteratif</span>
+                <span class="rekursif">Rekursif</span>
+            </div>
 
-button.danger { background: #dc2626; }
+            <p class="chart-title">Tren Waktu Eksekusi (Line Chart)</p>
+            <canvas id="lineChart"></canvas>
 
-button.clear {
-    margin-top: 10px;
-    width: 100%;
-    background: #334155;
-}
+            <p class="chart-title">Perbandingan Langsung (Bar Chart)</p>
+            <canvas id="barChart"></canvas>
+        </div>
+    </section>
 
-.result, .history {
-    margin-top: 12px;
-    background: #020617;
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 13px;
-}
+    <section class="table-section">
+        <h3>Tabel Perbandingan</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>n</th>
+                    <th>Iteratif (ms)</th>
+                    <th>Rekursif (ms)</th>
+                </tr>
+            </thead>
+            <tbody id="tabelData"></tbody>
+        </table>
+    </section>
+</div>
 
-.history {
-    max-height: 180px;
-    overflow-y: auto;
-}
-
-.legend {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 10px;
-}
-
-.legend span::before {
-    content: "";
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border-radius: 4px;
-    margin-right: 6px;
-}
-
-.legend .iteratif::before { background: #60a5fa; }
-.legend .rekursif::before { background: #f87171; }
-
-canvas {
-    width: 100%;
-    height: 240px;
-    margin-bottom: 12px;
-    background: #020617;
-    border-radius: 12px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 8px;
-    border-bottom: 1px solid #1e293b;
-    text-align: center;
-}
+<script src="script.js"></script>
+</body>
+</html>
